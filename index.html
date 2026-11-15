@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Metal Rates</title>
+<meta name="theme-color" content="#0b0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Metal Rates">
+<link rel="apple-touch-icon" id="ati" href="">
+<link rel="manifest" id="mf">
+<style>
+:root{--bg:#0b0d12;--card:#141823;--card2:#1a2030;--line:#252c3d;--tx:#eef1f7;--mut:#8b94a8;--up:#2ee59d;--dn:#ff5d6c;--gold:#f5c451;--r:20px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{padding:env(safe-area-inset-top) 0 calc(86px + env(safe-area-inset-bottom));min-height:100vh;
+background:radial-gradient(900px 420px at 85% -10%,#2a2310 0,transparent 60%),radial-gradient(700px 400px at -10% 10%,#102a2a 0,transparent 55%),var(--bg)}
+header{padding:22px 20px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+h1{font-size:26px;margin:0;letter-spacing:-.5px;font-weight:800}
+h1 span{background:linear-gradient(90deg,#f5c451,#ffe29a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);font-size:12.5px;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut)}
+.open .dot{background:var(--up);box-shadow:0 0 0 0 rgba(46,229,157,.6);animation:pu 1.8s infinite}
+.closed .dot{background:var(--dn)}
+@keyframes pu{70%{box-shadow:0 0 0 8px rgba(46,229,157,0)}100%{box-shadow:0 0 0 0 rgba(46,229,157,0)}}
+.wrap{padding:8px 16px;display:grid;gap:14px}
+.card{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--ac,var(--gold));opacity:.9}
+.row{display:flex;justify-content:space-between;align-items:center}
+.nm{font-weight:700;font-size:15px;display:flex;gap:9px;align-items:center}
+.badge{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#111;background:var(--ac)}
+.px{font-size:30px;font-weight:800;letter-spacing:-1px;margin:10px 0 2px;font-variant-numeric:tabular-nums}
+.px small{font-size:13px;color:var(--mut);font-weight:600;letter-spacing:0;margin-left:4px}
+.chg{font-weight:700;font-size:13.5px}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.st{background:rgba(255,255,255,.035);border-radius:12px;padding:8px 9px}
+.st b{display:block;font-size:12.5px;font-variant-numeric:tabular-nums}
+.st i{font-style:normal;color:var(--mut);font-size:10.5px}
+.inr{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+.inr b{color:var(--tx);font-size:15px}
+svg.sp{width:100%;height:46px;margin-top:10px;display:block}
+nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;background:rgba(20,24,35,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;padding:6px;z-index:9}
+nav button{flex:1;background:none;border:0;color:var(--mut);font:600 12px inherit;font-family:inherit;padding:10px 4px;border-radius:18px}
+nav button.on{background:linear-gradient(90deg,#f5c451,#e0a92a);color:#16130a}
+.tab{display:none}.tab.on{display:block}
+h2{font-size:17px;margin:6px 4px 10px}
+.note{color:var(--mut);font-size:12px;line-height:1.5;padding:0 4px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+td,th{padding:9px 4px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600;font-size:11.5px}
+td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 5px}
+input,select{width:100%;background:#0f131c;border:1px solid var(--line);color:var(--tx);padding:12px;border-radius:12px;font-size:15px;font-family:inherit}
+.btn{width:100%;margin-top:14px;padding:14px;border:0;border-radius:14px;font-weight:800;font-size:15px;background:linear-gradient(90deg,#f5c451,#e0a92a);color:#16130a}
+.btn.alt{background:#25d366;color:#04210f}
+.btn.ghost{background:var(--card2);color:var(--tx);border:1px solid var(--line)}
+.err{background:#2b1519;border:1px solid #5a2630;color:#ffb3bb;padding:12px 14px;border-radius:14px;font-size:13px;margin:0 16px 8px;display:none}
+.sk{height:150px;border-radius:var(--r);background:linear-gradient(90deg,var(--card),var(--card2),var(--card));background-size:200% 100%;animation:sh 1.3s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Metal <span>Rates</span></h1><div class="sub" id="upd">Loading…</div></div>
+  <div class="pill closed" id="mk"><span class="dot"></span><span id="mkt">—</span></div>
+</header>
+<div class="err" id="err"></div>
+
+<section class="tab on" id="t-live"><div class="wrap" id="live"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></section>
+
+<section class="tab" id="t-scrap"><div class="wrap" id="scrap"></div></section>
+
+<section class="tab" id="t-set"><div class="wrap">
+  <div class="card">
+    <h2 style="margin-top:0">Refresh</h2>
+    <label>Auto-refresh</label>
+    <select id="int"><option value="30">Every 30 seconds</option><option value="60">Every 1 minute</option><option value="300">Every 5 minutes</option><option value="0">Manual only</option></select>
+    <div class="note" style="padding:8px 0 0">No sign-up or key needed. Prices come from free public feeds.</div>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">Your market adjustments</h2>
+    <div class="note" style="padding:0 0 4px">Added on top of the world price to get the India rate (import duty, GST). Already set to typical Indian values.</div>
+    <label>Gold premium %</label><input id="p_gold" type="number" step="0.1">
+    <label>Silver premium %</label><input id="p_silver" type="number" step="0.1">
+    <label>Copper premium %</label><input id="p_copper" type="number" step="0.1">
+    <label>Aluminium premium %</label><input id="p_alu" type="number" step="0.1">
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">Scrap percentages</h2>
+    <div class="note" style="padding:0 0 4px">What % of the fresh rate your buyer pays for each scrap grade. Edit to match real quotes.</div>
+    <div id="scrapset"></div>
+  </div>
+  <button class="btn" id="save">Save settings</button>
+  <button class="btn alt" id="share">Share on WhatsApp</button>
+</div></section>
+
+<nav>
+  <button class="on" data-t="live">Live</button>
+  <button data-t="scrap">Scrap rates</button>
+  <button data-t="set">Settings</button>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s);
+const M=[
+ {id:'gold',sym:'XAU',name:'Gold',ab:'Au',ac:'#f5c451',unit:'oz'},
+ {id:'silver',sym:'XAG',name:'Silver',ab:'Ag',ac:'#c9d3e6',unit:'oz'},
+ {id:'copper',sym:'HG',name:'Copper',ab:'Cu',ac:'#ff9a62',unit:'lb'},
+ {id:'alu',sym:'ALI',name:'Aluminium',ab:'Al',ac:'#7fd1ff',unit:'t'}
+];
+const DEF={int:60,man:{},prem:{gold:9,silver:9,copper:5,alu:7.5},
+ scrap:{
+  gold:[['24K / pure gold',98],['22K ornaments',89],['18K ornaments',73]],
+  silver:[['Pure silver .999',98],['Sterling .925',89],['Utensils / old items',85]],
+  copper:[['Bright wire / Millberry',92],['Heavy copper',88],['Motor winding scrap',80],['Mixed copper',72]],
+  alu:[['Clean aluminium',80],['Utensils / sheets',72],['Mixed / painted',62]]
+ }};
+let S=load('mr_s2',DEF);S.prem={...DEF.prem,...S.prem};S.scrap={...DEF.scrap,...S.scrap};
+let D=load('mr_d',null),H=load('mr_h',{}),FX=load('mr_fx',{r:84,t:0});
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+/* icon + manifest generated in-page */
+(function(){
+ const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');
+ const g=x.createLinearGradient(0,0,180,180);g.addColorStop(0,'#1d1a0c');g.addColorStop(1,'#0b0d12');
+ x.fillStyle=g;x.fillRect(0,0,180,180);
+ const g2=x.createLinearGradient(40,40,140,140);g2.addColorStop(0,'#ffe29a');g2.addColorStop(1,'#d9a022');
+ x.fillStyle=g2;x.beginPath();x.moveTo(40,120);x.lineTo(60,70);x.lineTo(120,70);x.lineTo(140,120);x.closePath();x.fill();
+ x.fillStyle='#0b0d12';x.font='800 34px sans-serif';x.textAlign='center';x.fillText('Au',90,108);
+ const u=c.toDataURL('image/png');$('#ati').href=u;
+ const m={name:'Metal Rates',short_name:'Metal Rates',display:'standalone',background_color:'#0b0d12',theme_color:'#0b0d12',start_url:location.href.split('#')[0],icons:[{src:u,sizes:'180x180',type:'image/png'}]};
+ try{$('#mf').href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}))}catch(e){}
+})();
+
+/* market session (COMEX-style: Sun 6pm ET to Fri 5pm ET, daily break 5-6pm ET) */
+function session(){
+ const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
+ const g=t=>p.find(o=>o.type===t).value;const d=g('weekday'),h=(+g('hour'))%24+(+g('minute'))/60;
+ if(d==='Sat')return false;if(d==='Fri'&&h>=17)return false;if(d==='Sun'&&h<18)return false;
+ if(h>=17&&h<18)return false;return true;
+}
+function paintSession(){const o=session();$('#mk').className='pill '+(o?'open':'closed');$('#mkt').textContent=o?'Market open':'Market closed'}
+
+/* conversions: USD base → INR per local unit */
+function usdPerKg(m,p){
+ if(m.id==='gold'||m.id==='silver')return p/31.1035*1000;
+ if(m.id==='copper'){return p<100?p*2.20462:p/1000}
+ return p<20?p*2.20462:p/1000;
+}
+function inrBase(m,p){const kg=usdPerKg(m,p)*FX.r;return m.id==='gold'?kg/100:kg} /* gold per 10g, others per kg */
+const unitL=m=>m.id==='gold'?'per 10 g':'per kg';
+const fmt=(n,d=2)=>isFinite(n)?n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const inr=(n)=>'₹'+fmt(n,0);
+const usdTxt=(m,p)=>'$'+fmt(p,2)+'/'+(m.unit==='oz'?'oz':m.unit==='lb'?'lb':'t');
+
+/* Keyless sources. Each metal tries its symbols in order; gold/silver also have a second feed. */
+const SYMS={gold:['XAU'],silver:['XAG'],copper:['HG','XCU','CU'],alu:['ALU','XAL','ALI','AL']};
+async function getJSON(u,ms=5000){
+ const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);
+ try{const r=await fetch(u,{cache:'no-store',signal:c.signal});if(!r.ok)throw new Error(r.status);return await r.json()}
+ finally{clearTimeout(t)}
+}
+/* Main source: futures market data with yesterday's close, today's open, high and low built in */
+const YF={gold:'GC=F',silver:'SI=F',copper:'HG=F',alu:'ALI=F'};
+async function viaProxy(u){
+ const e=encodeURIComponent(u);
+ const tries=[u,'https://api.allorigins.win/raw?url='+e,'https://api.codetabs.com/v1/proxy?quest='+e,'https://corsproxy.io/?'+e,'https://thingproxy.freeboard.io/fetch/'+u,'https://cors.eu.org/'+u];
+ return Promise.any(tries.map(t=>getJSON(t,7000)));
+}
+async function fetchFull(m){
+ try{
+  let j;
+  try{j=await viaProxy('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(YF[m.id])+'?range=5d&interval=1d')}
+  catch(e){j=await viaProxy('https://query2.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(YF[m.id])+'?range=5d&interval=1d')}
+  const r=j.chart.result[0],mt=r.meta,q=r.indicators.quote[0];
+  const price=+mt.regularMarketPrice;if(!(price>0))return null;
+  const cl=(q.close||[]).filter(v=>v!=null),op=(q.open||[]).filter(v=>v!=null);
+  const prev=mt.chartPreviousClose!=null?+mt.chartPreviousClose:(cl.length>1?cl[cl.length-2]:null);
+  const ch=prev!=null?price-prev:null;
+  return {price,prev,open:op.length?op[op.length-1]:null,hi:mt.regularMarketDayHigh!=null?+mt.regularMarketDayHigh:null,lo:mt.regularMarketDayLow!=null?+mt.regularMarketDayLow:null,ch,pc:prev?ch/prev*100:null};
+ }catch(e){return null}
+}
+async function fetchPrice(m){
+ for(const s of SYMS[m.id]){
+  try{const j=await getJSON('https://api.gold-api.com/price/'+s);const p=+j.price;if(p>0)return p}catch(e){}
+ }
+ if(m.id==='gold'||m.id==='silver'){
+  try{const j=await getJSON('https://xaus.com/api/v1/spot');
+   const p=m.id==='silver'?+j.silver_usd_oz:+(j.gold_usd_oz||j.xau_usd_oz||j.price||j.usd_oz||j.spot);
+   if(p>0)return p}catch(e){}
+ }
+ return null;
+}
+/* change, open, high, low come from what this phone has seen today; prev close = last price of the previous day */
+function derive(id,price){
+ const h=H[id]||{};const prev=h.prevClose!=null?h.prevClose:null;const base=prev!=null?prev:h.dayOpen;
+ let ch=null,pc=null;if(base!=null&&price!=null){ch=price-base;pc=ch/base*100}
+ return {price,ch,pc,open:h.dayOpen,prev,hi:h.hi,lo:h.lo};
+}
+
+function spark(arr,col){
+ if(!arr||arr.length<2)return '';
+ const w=300,h=46,mn=Math.min(...arr),mx=Math.max(...arr),r=(mx-mn)||1;
+ const pts=arr.map((v,i)=>[i/(arr.length-1)*w,h-4-((v-mn)/r)*(h-8)]);
+ const l=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+ return `<svg class="sp" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="f${col.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${l} L${w} ${h} L0 ${h}Z" fill="url(#f${col.slice(1)})"/><path d="${l}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+function render(){
+ if(!D){return}
+ const open=session();let html='';
+ for(const m of M){const x=D.v[m.id];if(!x)continue;
+  if(x.price==null){
+   html+=`<div class="card" style="--ac:${m.ac}"><div class="row"><div class="nm"><span class="badge">${m.ab}</span>${m.name}</div></div>
+   <div class="px">—</div><div class="note" style="padding:6px 0 0">Price not available right now. It will retry automatically.</div></div>`;
+   continue;
+  }
+  const R=p=>p==null?null:inrBase(m,p)*(1+S.prem[m.id]/100);
+  const fresh=R(x.price),prevR=R(x.prev);
+  const chR=prevR!=null?fresh-prevR:null,pcR=prevR?chR/prevR*100:null;
+  const up=(chR||0)>=0,cls=up?'up':'dn',ar=up?'▲':'▼';
+  const v2=p=>p==null?'—':inr(R(p));
+  const per=m.id==='gold'?'10 g':'kg';
+  html+=`<div class="card" style="--ac:${m.ac}">
+  <div class="row"><div class="nm"><span class="badge">${m.ab}</span>${m.name}</div><div class="chg ${cls}">${chR==null?'':ar+' '+fmt(Math.abs(pcR),2)+'%'}</div></div>
+  <div class="px">${inr(fresh)}<small>per ${per}</small></div>
+  <div class="chg ${cls}">${chR==null?'<span style="color:var(--mut)">Change vs yesterday: not available yet</span>':(up?'+':'−')+inr(Math.abs(chR))+' vs yesterday'}</div>
+  ${spark((H[m.id]||{}).s,m.ac)}
+  <div class="grid">
+   <div class="st"><b>${v2(x.open)}</b><i>Today's open</i></div>
+   <div class="st"><b>${v2(x.prev)}</b><i>Yesterday's close</i></div>
+   <div class="st"><b>${v2(x.hi)}</b><i>Today's high</i></div>
+   <div class="st"><b>${v2(x.lo)}</b><i>Today's low</i></div>
+  </div>
+  <div class="inr"><span>World price</span><b style="font-size:13px">${usdTxt(m,x.price)}</b></div></div>`;
+ }
+ $('#live').innerHTML=html||'<div class="note">Loading prices…</div>';
+
+ let s='';
+ for(const m of M){const x=D.v[m.id];if(!x)continue;
+  if(x.price==null)continue;
+  const fresh=inrBase(m,x.price)*(1+S.prem[m.id]/100);
+  s+=`<div class="card" style="--ac:${m.ac}"><div class="row"><div class="nm"><span class="badge">${m.ab}</span>${m.name}</div><div class="chg" style="color:var(--mut)">${unitL(m)}</div></div>
+  <table><tr><th>Type</th><th>%</th><th>Rate</th></tr>
+  <tr><td><b>Fresh / new (India)</b></td><td>100</td><td>${inr(fresh)}</td></tr>
+  ${S.scrap[m.id].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${inr(fresh*r[1]/100)}</td></tr>`).join('')}</table></div>`;
+ }
+ s+=`<div class="note">Scrap and fresh rates are calculated from the world price × dollar rate (₹${fmt(FX.r,2)}) × your premium and scrap % in Settings. Real dealer rates vary by city, purity and quantity, so confirm with your buyer before selling.</div>`;
+ $('#scrap').innerHTML=s;
+ const t=new Date(D.t);$('#upd').textContent='Updated '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' · $1 = ₹'+fmt(FX.r,2);
+ paintSession();
+}
+
+function track(p){
+ const day=new Date().toDateString();
+ for(const m of M){const price=p[m.id];if(price==null)continue;
+  const h=H[m.id]||(H[m.id]={s:[],day:'',dayOpen:null,prevClose:null,hi:null,lo:null,last:null});
+  if(h.day!==day){if(h.last!=null)h.prevClose=h.last;h.day=day;h.dayOpen=price;h.hi=price;h.lo=price}
+  h.hi=Math.max(h.hi??price,price);h.lo=Math.min(h.lo??price,price);h.last=price;
+  h.s.push(price);if(h.s.length>80)h.s.shift();
+ }
+ save('mr_h',H);
+}
+
+async function fx(){
+ if(Date.now()-FX.t<6*3600e3)return;
+ try{const j=await getJSON('https://open.er-api.com/v6/latest/USD',4000);if(j&&j.rates&&j.rates.INR){FX={r:j.rates.INR,t:Date.now()};save('mr_fx',FX)}}catch(e){}
+}
+function showErr(t){const e=$('#err');e.textContent=t;e.style.display=t?'block':'none'}
+
+async function refresh(){
+ try{
+  /* Best source: data.json, refreshed every few minutes by the helper next to this file */
+  try{
+   const j=await getJSON('data.json?t='+Date.now(),6000);
+   if(j&&j.metals&&j.usdinr){
+    FX={r:+j.usdinr,t:Date.now()};save('mr_fx',FX);
+    const vv={};M.forEach(m=>{const o=j.metals[m.id];vv[m.id]=o&&o.price>0?{price:+o.price,prev:o.prev??null,open:o.open??null,hi:o.hi??null,lo:o.lo??null}:{price:null}});
+    if(M.some(m=>vv[m.id].price!=null)){
+     D={v:vv,t:new Date(j.t).getTime()||Date.now()};save('mr_d',D);
+     const miss=M.filter(m=>vv[m.id].price==null).map(m=>m.name);
+     showErr(miss.length?'Price for '+miss.join(', ')+' is not available right now.':'');
+     render();return;
+    }
+   }
+  }catch(e){}
+  await fx();
+  const v={};M.forEach(m=>{v[m.id]=(D&&D.v&&D.v[m.id])||{price:null}});
+  const done=()=>{D={v,t:Date.now()};save('mr_d',D);
+   const miss=M.filter(m=>v[m.id].price==null).map(m=>m.name);
+   showErr(miss.length?'Price for '+miss.join(', ')+' could not be loaded right now. It will retry automatically.':'');
+   render()};
+  /* each metal fills in as soon as its own answer arrives */
+  await Promise.all(M.map(async m=>{
+   const [f,pr]=await Promise.all([fetchFull(m),fetchPrice(m)]);
+   if(f){v[m.id]=f;if(f.prev==null||f.open==null)track({[m.id]:f.price})}
+   else if(pr!=null){track({[m.id]:pr});v[m.id]=derive(m.id,pr)}
+   done();
+  }));
+  if(M.every(m=>v[m.id].price==null))throw new Error('Could not reach the price feeds. Check your internet.');
+ }catch(e){showErr((e.message||'Could not load prices.')+(D?' Showing last saved prices.':''));if(D)render()}
+}
+
+let timer;
+function schedule(){clearInterval(timer);if(S.int>0)timer=setInterval(()=>{if(!document.hidden)refresh()},S.int*1000)}
+
+/* settings UI */
+function fillSettings(){
+ $('#int').value=String(S.int);
+ $('#p_gold').value=S.prem.gold;$('#p_silver').value=S.prem.silver;$('#p_copper').value=S.prem.copper;$('#p_alu').value=S.prem.alu;
+ $('#scrapset').innerHTML=M.map(m=>`<div class="note" style="margin-top:10px;color:${m.ac}"><b>${m.name}</b></div>`+S.scrap[m.id].map((r,i)=>`<label>${r[0]} %</label><input type="number" step="1" data-m="${m.id}" data-i="${i}" value="${r[1]}">`).join('')).join('');
+}
+$('#save').onclick=()=>{
+ S.int=+$('#int').value;
+ S.prem={gold:+$('#p_gold').value||0,silver:+$('#p_silver').value||0,copper:+$('#p_copper').value||0,alu:+$('#p_alu').value||0};
+ document.querySelectorAll('#scrapset input').forEach(i=>{S.scrap[i.dataset.m][+i.dataset.i][1]=+i.value||0});
+ save('mr_s2',S);schedule();render();refresh();go('live');
+};
+$('#share').onclick=async()=>{
+ const url=location.href.split('#')[0],text='Live copper, gold, silver & aluminium rates with scrap prices: ';
+ if(navigator.share){try{await navigator.share({title:'Metal Rates',text,url});return}catch(e){}}
+ location.href='https://wa.me/?text='+encodeURIComponent(text+url);
+};
+function go(t){document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('on',e.id==='t-'+t));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){paintSession();if(!D||Date.now()-D.t>S.int*1000)refresh()}});
+setInterval(paintSession,30000);
+
+S.man=S.man||{};fillSettings();if(D)render();schedule();refresh();
+</script>
+</body>
+</html>
