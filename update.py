@@ -19,9 +19,8 @@ def yahoo(sym):
                 continue
             closes = [c for c in (q.get("close") or []) if c is not None]
             opens = [o for o in (q.get("open") or []) if o is not None]
-            prev = m.get("chartPreviousClose")
-            if prev is None and len(closes) > 1:
-                prev = closes[-2]
+            # previous close = the close of the session before the latest one
+            prev = closes[-2] if len(closes) > 1 else m.get("chartPreviousClose")
             return {"price": price, "prev": prev,
                     "open": opens[-1] if opens else None,
                     "hi": m.get("regularMarketDayHigh"), "lo": m.get("regularMarketDayLow")}

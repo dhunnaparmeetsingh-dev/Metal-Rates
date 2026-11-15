@@ -112,14 +112,14 @@ const M=[
  {id:'copper',sym:'HG',name:'Copper',ab:'Cu',ac:'#ff9a62',unit:'lb'},
  {id:'alu',sym:'ALI',name:'Aluminium',ab:'Al',ac:'#7fd1ff',unit:'t'}
 ];
-const DEF={int:60,man:{},prem:{gold:9,silver:9,copper:5,alu:7.5},
+const DEF={int:60,man:{},prem:{gold:16.1,silver:18.6,copper:3.4,alu:7.5},
  scrap:{
   gold:[['24K / pure gold',98],['22K ornaments',89],['18K ornaments',73]],
   silver:[['Pure silver .999',98],['Sterling .925',89],['Utensils / old items',85]],
   copper:[['Bright wire / Millberry',92],['Heavy copper',88],['Motor winding scrap',80],['Mixed copper',72]],
   alu:[['Clean aluminium',80],['Utensils / sheets',72],['Mixed / painted',62]]
  }};
-let S=load('mr_s2',DEF);S.prem={...DEF.prem,...S.prem};S.scrap={...DEF.scrap,...S.scrap};
+let S=load('mr_s3',DEF);S.prem={...DEF.prem,...S.prem};S.scrap={...DEF.scrap,...S.scrap};
 let D=load('mr_d',null),H=load('mr_h',{}),FX=load('mr_fx',{r:84,t:0});
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -180,7 +180,7 @@ async function fetchFull(m){
   const r=j.chart.result[0],mt=r.meta,q=r.indicators.quote[0];
   const price=+mt.regularMarketPrice;if(!(price>0))return null;
   const cl=(q.close||[]).filter(v=>v!=null),op=(q.open||[]).filter(v=>v!=null);
-  const prev=mt.chartPreviousClose!=null?+mt.chartPreviousClose:(cl.length>1?cl[cl.length-2]:null);
+  const prev=cl.length>1?cl[cl.length-2]:(mt.chartPreviousClose!=null?+mt.chartPreviousClose:null);
   const ch=prev!=null?price-prev:null;
   return {price,prev,open:op.length?op[op.length-1]:null,hi:mt.regularMarketDayHigh!=null?+mt.regularMarketDayHigh:null,lo:mt.regularMarketDayLow!=null?+mt.regularMarketDayLow:null,ch,pc:prev?ch/prev*100:null};
  }catch(e){return null}
@@ -229,11 +229,11 @@ function render(){
   html+=`<div class="card" style="--ac:${m.ac}">
   <div class="row"><div class="nm"><span class="badge">${m.ab}</span>${m.name}</div><div class="chg ${cls}">${chR==null?'':ar+' '+fmt(Math.abs(pcR),2)+'%'}</div></div>
   <div class="px">${inr(fresh)}<small>per ${per}</small></div>
-  <div class="chg ${cls}">${chR==null?'<span style="color:var(--mut)">Change vs yesterday: not available yet</span>':(up?'+':'−')+inr(Math.abs(chR))+' vs yesterday'}</div>
+  <div class="chg ${cls}">${chR==null?'<span style="color:var(--mut)">Change vs previous close: not available yet</span>':(up?'+':'−')+inr(Math.abs(chR))+' vs previous close'}</div>
   ${spark((H[m.id]||{}).s,m.ac)}
   <div class="grid">
    <div class="st"><b>${v2(x.open)}</b><i>Today's open</i></div>
-   <div class="st"><b>${v2(x.prev)}</b><i>Yesterday's close</i></div>
+   <div class="st"><b>${v2(x.prev)}</b><i>Previous close</i></div>
    <div class="st"><b>${v2(x.hi)}</b><i>Today's high</i></div>
    <div class="st"><b>${v2(x.lo)}</b><i>Today's low</i></div>
   </div>
@@ -319,7 +319,7 @@ $('#save').onclick=()=>{
  S.int=+$('#int').value;
  S.prem={gold:+$('#p_gold').value||0,silver:+$('#p_silver').value||0,copper:+$('#p_copper').value||0,alu:+$('#p_alu').value||0};
  document.querySelectorAll('#scrapset input').forEach(i=>{S.scrap[i.dataset.m][+i.dataset.i][1]=+i.value||0});
- save('mr_s2',S);schedule();render();refresh();go('live');
+ save('mr_s3',S);schedule();render();refresh();go('live');
 };
 $('#share').onclick=async()=>{
  const url=location.href.split('#')[0],text='Live copper, gold, silver & aluminium rates with scrap prices: ';
